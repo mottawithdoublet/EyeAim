@@ -4,18 +4,24 @@ lsel=len(sel)
  
 print sel, lsel
 
+#Creates and places eye main control 
 eyeMainControl= cmds.circle(n="main_eyeCtrl", ch=False, nr=(1,0,0))
 eyeMainGrp= cmds.group (n="main_eyeCtrlGrp")
 cmds.move(-40, eyeMainGrp, z=True)
 cmds.rotate(90, eyeMainGrp, y=True)
+
+#For each eye do:
 for cont in sel:
     eyeJoint=cont
     TRA = cmds.xform(cont,ws=True, q=True, t=True)
+    
+    #Create up Locator 
     nameLocator=cont+'_locator'
     eyeLocator=cmds.spaceLocator(n=nameLocator,r=True)
     cmds.xform (eyeLocator, ws=True, t=TRA)
     cmds.move(250, eyeLocator, y=True)
     
+    #Creates and places individual eye control
     eyeControl= cmds.circle(n=cont+"_ctrl", ch=False, nr=(1,0,0))
     eyeGrp= cmds.group (n=cont+"_grp")
     cmds.xform (eyeGrp, ws=True, t=TRA)
@@ -23,4 +29,5 @@ for cont in sel:
     cmds.rotate(90, eyeGrp, y=True)
     cmds.parent(eyeGrp, eyeMainControl)
     
+    #Create aim constraint based of up Locator and joint
     cmds.aimConstraint(eyeControl, eyeJoint, mo=True, wut='object', wuo=nameLocator)
